@@ -2,12 +2,13 @@ const fs = require('fs');
 const Discord = require("discord.js");
 const client = new Discord.Client();
 
-var channelID = 492207584674185231;
 var bombTimeHr = 12
 var bombTimer = null
 var notificationTimer12 = null
 var production = false;
 var didWarn = false;
+
+var channel = new Discord.Channel();
 
 var hrInMs;
 if(production){
@@ -20,12 +21,13 @@ if(production){
 var trigMsg = "nice"
 
 var discordToken = fs.readFileSync('discordToken.txt', { encoding: 'utf8'});
+var channelID = fs.readFileSync('channelID.txt', { encoding: 'utf8'});
 
 function armResetTimer(message){
 	notificationTimer12 = setTimeout(() => {
 		notificationTimer12 = null
 		didWarn = true;
-		message.channel.send("Channel will detonate in 1h\nTo reset bomb write nice.");
+		message.channel.send("Channel will detonate in 1h\n\nTo reset bomb write nice.");
 
 	}, (bombTimeHr - 1) * hrInMs)
 }
@@ -33,16 +35,16 @@ function armResetTimer(message){
 function initBomb(message) {
 	bombTimer = setTimeout(() => {
 		bombTimer = null
-		message.channel.send("ded");
+//		message.channel.send("ded");
 		console.log("BOOM");
-
+		client.channels.get(channelID).delete();
 	}, bombTimeHr * hrInMs)
 	armResetTimer(message);
 }
 
 function armBomb(message, reset){
 	console.log("bomb is armed");
-	message.channel.send("bomb has been activated! " + bombTimeHr + "h until detonation");
+//	message.channel.send("bomb has been activated! " + bombTimeHr + "h until detonation");
 	initBomb(message);
 
 }
@@ -59,20 +61,24 @@ function resetBomb(message){
 }
 
 client.on("ready", () => {
-  console.log("I am ready!");
+  	console.log("I am ready!");
 });
 
 
 client.on("message", (message) => {
-	if (message.content.startsWith(trigMsg)) {
-		console.log("got trigger");
-		if (bombTimer !== null) { //bombtimer is active
-			console.log("clearing bomb");
-			resetBomb(message);
-		}	else { //bombtimer is not active
-			armBomb(message, false);
+	console.log("We are on the", message.channel.id === channelID ? "right" : "wrong", "channel", "since this channel is", message.channel.id);
+	if(message.channel.id == channelID){
+
+		if (message.content.startsWith(trigMsg)) {
+			console.log("got trigger");
+			if (bombTimer !== null) { //bombtimer is active
+				console.log("clearing bomb");
+				resetBomb(message);
+			}	else { //bombtimer is not active
+				armBomb(message, false);
+			}
 		}
-  }
+	}
 });
 
 client.login(discordToken);
