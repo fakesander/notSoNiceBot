@@ -1,0 +1,32 @@
+{
+  "name": "not-so-nice-bot",
+  "version": "0.1.0",
+  "description": "kys",
+  "main": "mybot.js",
+  "dependencies": {
+    "discord.js": "^11.4.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fakesander/notSoNiceBot.git"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "notsonicebot",
+    "kys",
+    "fakesaander",
+    "vonlatvala",
+    "pinpp"
+  ],
+  "author": "FakeSander",
+  "license": "LGPL-2.1",
+  "bugs": {
+    "url": "https://github.com/fakesander/notSoNiceBot/issues"
+  },
+  "homepage": "https://github.com/fakesander/notSoNiceBot#readme"
+}
