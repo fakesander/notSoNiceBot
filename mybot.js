@@ -5,8 +5,9 @@ const client = new Discord.Client();
 var bombTimeHr = 12
 var bombTimer = null
 var notificationTimer12 = null
-var production = false;
+var production = true;
 var didWarn = false;
+var niceCounter = 0;
 
 var channel = new Discord.Channel();
 
@@ -71,6 +72,7 @@ client.on("message", (message) => {
 
 		if (message.content.startsWith(trigMsg)) {
 			console.log("got trigger");
+			niceCounter += 1;
 			if (bombTimer !== null) { //bombtimer is active
 				console.log("clearing bomb");
 				resetBomb(message);
@@ -80,5 +82,13 @@ client.on("message", (message) => {
 		}
 	}
 });
+
+client.on("message", (message) => {
+	if(message.channel.id == channelID){
+		if (message.content.startsWith("!nicecount")) {
+			message.channel.send(niceCounter + " 'nice' so far.");
+		}
+	}
+})
 
 client.login(discordToken);
