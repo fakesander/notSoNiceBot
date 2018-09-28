@@ -3,11 +3,20 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 
 var channelID = 492207584674185231;
-var bombTimeHr = 24
+var bombTimeHr = 12
 var bombTimer = null
 var notificationTimer12 = null
-//var timeK = 60 * 60 * 1000
-var timeK = 250
+var production = false;
+var didWarn = false;
+
+var hrInMs;
+if(production){
+	hrInMs = 60 * 60 * 1000
+}else{
+	hrInMs = 1000
+}
+
+
 var trigMsg = "nice"
 
 var discordToken = fs.readFileSync('discordToken.txt', { encoding: 'utf8'});
@@ -15,9 +24,10 @@ var discordToken = fs.readFileSync('discordToken.txt', { encoding: 'utf8'});
 function armResetTimer(message){
 	notificationTimer12 = setTimeout(() => {
 		notificationTimer12 = null
-		message.channel.send("T-" + (bombTimeHr)/2 + "h");
+		didWarn = true;
+		message.channel.send("Channel will detonate in 1h\nTo reset bomb write nice.");
 
-	}, (bombTimeHr * timeK)/2)
+	}, (bombTimeHr - 1) * hrInMs)
 }
 
 function initBomb(message) {
@@ -26,13 +36,13 @@ function initBomb(message) {
 		message.channel.send("ded");
 		console.log("BOOM");
 
-	}, bombTimeHr * timeK)
+	}, bombTimeHr * hrInMs)
 	armResetTimer(message);
 }
 
 function armBomb(message, reset){
 	console.log("bomb is armed");
-	message.channel.send("bomb has been activated!" + bombTimeHr + "h until detonation");
+	message.channel.send("bomb has been activated! " + bombTimeHr + "h until detonation");
 	initBomb(message);
 
 }
@@ -41,7 +51,10 @@ function resetBomb(message){
 	console.log("resetting bomb");
 	clearTimeout(bombTimer);
 	clearTimeout(notificationTimer12);
-	message.channel.send("Bomb has been reset!");
+	if(didWarn === true) {
+		message.channel.send("Bomb has been reset!");
+		didWarn = false;
+	}
 	initBomb(message);
 }
 
